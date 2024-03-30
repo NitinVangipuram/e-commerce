@@ -4,7 +4,7 @@ import { productService } from '../utils/productService';
 import { useContext } from 'react'; // Import useContext hook
 import { useCart } from '../context/CartContext'; // Import useCart hook
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
-
+import swal from 'sweetalert';
 
 function ProductDetailPage() {
   const { productId } = useParams();
@@ -28,20 +28,36 @@ function ProductDetailPage() {
 
   const handleAddToCart = async () => {
     if (!user) {
-      alert('Please log in to add items to the cart');
-      navigate('/login'); // Redirect to login page or wherever you see fit
+      swal({
+        title: "Not logged in",
+        text: "Please log in to add items to the cart",
+        icon: "warning",
+        button: "Go to Login",
+      }).then((value) => {
+        navigate('/login'); // Redirect to login page
+      });
       return;
     }
-
+  
     // Use the user's ID from the AuthContext
     const userId = user.id; // Adjust according to how user ID is stored
     const quantity = 1; // Set quantity, or adjust as needed
     try {
       await addToCart(userId, product._id, quantity);
-      alert('Added to cart successfully!');
+      swal({
+        title: "Success!",
+        text: "Added to cart successfully!",
+        icon: "success",
+        button: "Awesome!",
+      });
     } catch (error) {
       console.error('Failed to add product to cart:', error);
-      alert('Failed to add product to cart.');
+      swal({
+        title: "Failed!",
+        text: "Failed to add product to cart.",
+        icon: "error",
+        button: "OK",
+      });
     }
   };
 

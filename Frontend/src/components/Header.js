@@ -1,13 +1,31 @@
 import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext'; // Adjust the path as necessary
+import swal from 'sweetalert';
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { isAuthenticated, logout } = useContext(AuthContext); // Destructure isAuthenticated and logout from context
 
   const handleLogout = () => {
-    logout(); // Call the logout method from your AuthContext
+    // Show SweetAlert confirmation dialog
+    swal({
+      title: "Are you sure?",
+      text: "Do you want to logout?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willLogout) => {
+      if (willLogout) {
+        logout(); // Call the logout method from your AuthContext
+        swal("Logged out successfully!", {
+          icon: "success",
+        });
+      } else {
+        swal("Your session is safe!");
+      }
+    });
   };
 
   return (

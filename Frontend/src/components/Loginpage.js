@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; // Updated import
 import { AuthContext } from '../context/AuthContext';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import swal from 'sweetalert';
 
 
 function LoginPage() {
@@ -15,20 +14,20 @@ function LoginPage() {
     event.preventDefault();
     try {
       await authContext.login(email, password);
-      toast.success("Login successful!", {
-        onClose: () => navigate('/') // Navigate when the toast is closed.
+      swal("Good job!", "Login successful!", "success").then((value) => {
+        navigate('/'); // Navigate when the SweetAlert is acknowledged.
       });
     } catch (error) {
       console.error(error);
       // Display an error toast if login fails
-      toast.error(error.message || "Login failed. Please check your credentials.");
+      swal("Oops!", error.message || "Login failed. Please check your credentials.", "error");
     }
   };
 
 // Assuming you have a state and a function to handle login, add Tailwind classes for styling
 return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-6 rounded-lg shadow-md ">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
         </div>
@@ -63,7 +62,7 @@ return (
           </div>
         </form>
       </div>
-      <ToastContainer /> 
+     
     </div>
   );
 }  
