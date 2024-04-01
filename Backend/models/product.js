@@ -20,6 +20,17 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     required: false, // Set based on your requirements
   },
+  ratings: [{
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    rating: Number,
+  }],
+  averageRating: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model('product', ProductSchema);

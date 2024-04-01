@@ -4,6 +4,7 @@ import { productService } from '../utils/productService';
 import { useContext } from 'react'; // Import useContext hook
 import { useCart } from '../context/CartContext'; // Import useCart hook
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import RatingComponent from './RatingsComponent'; // Adjust path as necessary
 import swal from 'sweetalert';
 
 function ProductDetailPage() {
@@ -88,7 +89,10 @@ function ProductDetailPage() {
     </div>
     <div>
       <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
-      <div className="mt-3">{renderStars(product.rating)}</div>
+      <div className="mt-3">{renderStars(product.averageRating)}</div>
+    
+       {user && <RatingComponent productId={productId} userId={user.id} />}
+
       <p className="mt-4 text-lg text-gray-600">{product.description}</p>
       <p className="mt-4 text-2xl font-semibold text-gray-900">${product.price}</p>
       <div className="mt-6">
