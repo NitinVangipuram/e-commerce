@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 router.post('/:productId/rate', async (req, res) => {
   console.log('Request body:', req.body);
-  const { rating, userId } = req.body; // Assuming userId is passed in the request body
+  const { rating, userId, message } = req.body; // Include message in the destructured body
   const { productId } = req.params;
 
 
@@ -26,6 +26,8 @@ router.post('/:productId/rate', async (req, res) => {
 
   try {
     const product = await Product.findById(productId);
+    
+    
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -40,7 +42,7 @@ router.post('/:productId/rate', async (req, res) => {
       product.ratings[existingRatingIndex].rating = rating;
     } else {
       // Add new rating
-      product.ratings.push({ userId, rating });
+      product.ratings.push({ userId, rating, message }); // Add message here
     }
 
     // Recalculate average rating
