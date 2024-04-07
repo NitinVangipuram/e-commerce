@@ -98,14 +98,21 @@ function ProductDetailPage() {
         )}
       </div>
       <p className="mt-6 text-gray-700">{product.description}</p>
-      <p className="mt-6 text-2xl font-semibold text-gray-900">${product.price}</p>
+      <p className="mt-6 text-2xl font-semibold text-gray-900">₹{product.price}</p>
       <div className="mt-8 flex gap-4">
-        <button className="bg-gray-900 hover:bg-black text-white font-bold py-2 px-6 rounded" onClick={handleAddToCart}>
-          Add to Cart
-        </button>
-        <button className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded" onClick={handleBuyNow}>
-          Buy Now
-        </button>
+      <button
+  className="bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md"
+  onClick={handleAddToCart}
+>
+  Add to Cart
+</button>
+<button
+  className="bg-blue-700 hover:bg-blue-800 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md ml-4"
+  onClick={handleBuyNow}
+>
+  Buy Now
+</button>
+
       </div>
     </div>
   </div>
@@ -121,16 +128,32 @@ function ProductDetailPage() {
         />
       )}
       {product.ratings && product.ratings.length > 0 ? (
-        product.ratings.map((review) => (
-          <div key={review._id} className="bg-gray-50 p-6 rounded-lg shadow">
-            <p className="text-gray-800">{review.message}</p>
-            <div className="mt-3">{renderStars(review.rating)}</div>
-            <p className="mt-4 text-sm text-gray-600">Review Date: {new Date(review.createdAt).toLocaleDateString()}</p>
-          </div>
-        ))
-      ) : (
-        <p className="text-gray-600">No reviews yet.</p>
-      )}
+  product.ratings.map((review) => (
+    <div key={review._id} className="bg-white p-6 rounded-lg shadow mb-5 border border-gray-200">
+      {/* Emphasize the reviewer's email with a larger font size */}
+      <p className="text-lg font-semibold text-gray-700 mb-1">{review.email}</p>
+
+      <div className="mt-4 flex items-center">
+        <div>{renderStars(review.rating)}</div>
+        {/* Display the rating next to the stars for quick visual reference */}
+        <span className="ml-2 text-lg text-gray-600">{review.rating}/5</span>
+      </div>
+      {/* Message styling */}
+      <p className="text-gray-800 mt-2 leading-relaxed">{review.message}</p>
+      
+      {/* Ratings display */}
+
+      
+      {/* Review date with subtle emphasis */}
+      <p className="mt-4 text-sm text-gray-500">Reviewed on: {new Date(review.createdAt).toLocaleDateString()}</p>
+    </div>
+  ))
+) : (
+  <p className="text-gray-600">No reviews yet.</p>
+)}
+
+
+
     </div>
   </div>
 </div>

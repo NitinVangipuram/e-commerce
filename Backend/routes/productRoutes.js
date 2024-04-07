@@ -16,9 +16,8 @@ router.get('/', async (req, res) => {
 
 router.post('/:productId/rate', async (req, res) => {
   console.log('Request body:', req.body);
-  const { rating, userId, message } = req.body; // Include message in the destructured body
+  const { rating, userId, message } = req.body;
   const { productId } = req.params;
-
 
   if (!rating) {
     return res.status(400).json({ message: 'Rating is required' });
@@ -26,13 +25,15 @@ router.post('/:productId/rate', async (req, res) => {
 
   try {
     const product = await Product.findById(productId);
-    
-    
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-   
+    // Find the user by userId to get their email
+    const user = await User.findById(userId); // Assuming you have a User model
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
     // Check if the user has already rated the product
     const existingRatingIndex = product.ratings.findIndex(r => r.userId.toString() === userId);
@@ -40,9 +41,13 @@ router.post('/:productId/rate', async (req, res) => {
     if (existingRatingIndex !== -1) {
       // Update existing rating
       product.ratings[existingRatingIndex].rating = rating;
+      product.ratings[existingRatingIndex].email = user.email; // Update email from the user model
+      if (message) {
+        product.ratings[existingRatingIndex].message = message;
+      }
     } else {
-      // Add new rating
-      product.ratings.push({ userId, rating, message }); // Add message here
+      // Add new rating, including email from the user model
+      product.ratings.push({ userId, rating, message, email: user.email });
     }
 
     // Recalculate average rating
@@ -52,9 +57,11 @@ router.post('/:productId/rate', async (req, res) => {
 
     res.json({ message: 'Rating submitted successfully', product });
   } catch (error) {
-    console.error(error); // Logging the error can help with debugging
+    console.error(error);
     res.status(500).json({ message: 'An error occurred', error: error.message });
   }
 });
+
+
 
 module.exports = router;

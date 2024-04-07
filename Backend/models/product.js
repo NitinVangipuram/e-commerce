@@ -5,6 +5,10 @@ const ratingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  email: {
+    type: String,
+    required: true
+  },
   rating: Number,
   message: String, // Add this line to include a message with the rating
 }, { timestamps: true }); // Optional: add timestamps to keep track of when the rating was submitted

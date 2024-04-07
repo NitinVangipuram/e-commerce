@@ -55,12 +55,13 @@ function RatingComponent({ productId, userId, initialRating }) {
           style={{ width: '100%' }}
         ></textarea>
         <div className="mt-2">
-          <button 
-            onClick={submitRating} 
-            className="mt-4 bg-gray-900 hover:bg-black text-white font-bold py-2 px-6 rounded"
-          >
-            Submit
-          </button>
+        <button 
+  onClick={submitRating} 
+  className="mt-4 bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md"
+>
+  Submit
+</button>
+
         </div>
       </div>
     );
