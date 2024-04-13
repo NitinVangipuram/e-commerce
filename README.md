@@ -1,5 +1,3 @@
-Creating a README file for a project is essential as it provides an overview and necessary documentation to help new contributors understand the project structure and setup quickly. Below is a template for a README file that includes a description of the project, installation instructions, usage, file structure, and additional sections that might be relevant.
-
 ### README.md
 
 ```markdown
