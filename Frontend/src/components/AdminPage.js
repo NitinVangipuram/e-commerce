@@ -1,101 +1,208 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Button, TextField, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography, Checkbox, Grid } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function AdminPage() {
   const [productInfo, setProductInfo] = useState({
     name: '',
-    description: '',
+    propertyDescription: '',
     price: '',
     inStock: true,
+    category: ''
   });
-  const [image, setImage] = useState(null);
-
+  const [aboutThisItem, setAboutThisItem] = useState(['']);
+  const [additionalInformation, setAdditionalInformation] = useState([{
+    key: '',
+    value: ''
+  }]);
+  const [images, setImages] = useState([]); // Changed to support multiple images
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductInfo({ ...productInfo, [name]: value });
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    console.log(e.target.files); // Log the FileList object
+    setImages(Array.from(e.target.files));
+};
+
+
+
+  const handleAboutThisItemChange = (index, value) => {
+    const updatedItems = aboutThisItem.map((item, i) => i === index ? value : item);
+    setAboutThisItem(updatedItems);
+  };
+
+  const addAboutThisItem = () => {
+    setAboutThisItem([...aboutThisItem, '']);
+  };
+
+  const removeAboutThisItem = (index) => {
+    setAboutThisItem(aboutThisItem.filter((_, i) => i !== index));
+  };
+
+  const handleAdditionalInfoChange = (index, field, value) => {
+    const updatedInfo = additionalInformation.map((item, i) => {
+      if (i === index) {
+        return { ...item, [field]: value };
+      }
+      return item;
+    });
+    setAdditionalInformation(updatedInfo);
+  };
+
+  const addAdditionalInfo = () => {
+    setAdditionalInformation([...additionalInformation, { key: '', value: '' }]);
+  };
+
+  const removeAdditionalInfo = (index) => {
+    setAdditionalInformation(additionalInformation.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('image', image);
-    Object.keys(productInfo).forEach(key => formData.append(key, productInfo[key]));
+    console.log(images); // Check what is actually in the state at submission
+    images.forEach((file) => {
+        formData.append('images', file); // Correctly appending each file under the same key 'images'
+    });
+    formData.append('aboutThisItem', JSON.stringify(aboutThisItem));
+    formData.append('additionalInformation', JSON.stringify(
+      additionalInformation.reduce((acc, { key, value }) => {
+        if (key && value) acc[key.trim()] = value.trim();
+        return acc;
+      }, {})
+    ));
+    Object.keys(productInfo).forEach(key => {
+        formData.append(key, productInfo[key]);
+    });
 
     try {
-      await axios.post('http://localhost:5000/api/products', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      alert('Product added successfully');
+        const response = await axios.post('http://localhost:5000/api/products', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        alert('Product added successfully');
+        console.log(response.data); // Check server response
     } catch (error) {
-      console.error(error);
-      alert('Error adding product');
+        console.error(error);
+        alert('Error adding product');
     }
-  };
+};
 
   return (
-<div className="h-screen flex justify-center items-center bg-gray-100">
-  <div className="w-full max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg"> {/* Adjusted max width for a wider form */}
-    <h2 className="text-3xl font-semibold mb-6 text-gray-800">Add New Product</h2>
-    <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6"> {/* Added responsiveness for larger screens */}
-      <input
-        type="text"
-        name="name"
-        value={productInfo.name}
-        onChange={handleChange}
-        placeholder="Name"
-        required
-        className="input input-bordered w-full p-4 text-gray-700 bg-gray-50 rounded-lg border-none shadow-sm focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-        type="number"
-        name="price"
-        value={productInfo.price}
-        onChange={handleChange}
-        placeholder="Price"
-        required
-        className="input input-bordered w-full p-4 text-gray-700 bg-gray-50 rounded-lg border-none shadow-sm focus:ring-2 focus:ring-blue-500"
-      />
-      <textarea
-        name="description"
-        value={productInfo.description}
-        onChange={handleChange}
-        placeholder="Description"
-        rows="4"
-        className="textarea textarea-bordered w-full p-4 text-gray-700 bg-gray-50 rounded-lg border-none shadow-sm focus:ring-2 focus:ring-blue-500 md:col-span-2" // Description field spans 2 columns on larger screens
-      />
-      <label className="flex items-center space-x-3 cursor-pointer md:col-span-2"> {/* Spanning full width for consistency */}
-        <span className="text-gray-700">In Stock:</span>
-        <input
-          type="checkbox"
-          name="inStock"
-          checked={productInfo.inStock}
-          onChange={() => setProductInfo({ ...productInfo, inStock: !productInfo.inStock })}
-          className="toggle toggle-accent"
-        />
-      </label>
-      <input
-        type="file"
-        onChange={handleImageChange}
-        required
-        className="file:btn file:btn-block file:btn-accent p-2 rounded-lg md:col-span-2" // Spanning full width for file input
-      />
-      <button
-        type="submit"
-        className="btn btn-block btn-accent p-4 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors md:col-span-2" // Button spans full width on larger screens
-      >
-        Add Product
-      </button>
-    </form>
-  </div>
-</div>
-
+    <div style={{ padding: 20 }}>
+      <Paper style={{ padding: 16 }}>
+        <Typography variant="h5" gutterBottom>Add New Product</Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Name"
+            name="name"
+            value={productInfo.name}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Property Description"
+            name="propertyDescription"
+            value={productInfo.propertyDescription}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                label="Category"
+                name="category"
+                value={productInfo.category}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Price"
+                name="price"
+                value={productInfo.price}
+                onChange={handleChange}
+                type="number"
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+          {aboutThisItem.map((item, index) => (
+            <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+              <TextField
+                label="About This Item"
+                value={item}
+                onChange={(e) => handleAboutThisItemChange(index, e.target.value)}
+                fullWidth
+              />
+              <IconButton onClick={() => removeAboutThisItem(index)}>
+                <DeleteIcon />
+              </IconButton>
+            </div>
+          ))}
+          <Button onClick={addAboutThisItem} variant="outlined" color="primary" style={{ marginBottom: 16 }}>Add More</Button>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Key</TableCell>
+                <TableCell>Value</TableCell>
+                <TableCell>Remove</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {additionalInformation.map((info, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <TextField
+                      value={info.key}
+                      onChange={(e) => handleAdditionalInfoChange(index, 'key', e.target.value)}
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      value={info.value}
+                      onChange={(e) => handleAdditionalInfoChange(index, 'value', e.target.value)}
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => removeAdditionalInfo(index)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <Button onClick={addAdditionalInfo} variant="outlined" color="primary" style={{ marginBottom: 16 }}>Add Field</Button>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+            <Typography>In Stock:</Typography>
+            <Checkbox
+              checked={productInfo.inStock}
+              onChange={() => setProductInfo({ ...productInfo, inStock: !productInfo.inStock })}
+            />
+          </div>
+          <input
+            type="file"
+            multiple // Allow multiple files
+            onChange={handleImageChange}
+            required
+          />
+          <Button type="submit" variant="contained" color="primary" style={{ marginTop: 16 }}>Add Product</Button>
+        </form>
+      </Paper>
+    </div>
   );
 }
 

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { productService } from '../utils/productService';
-import { useContext } from 'react';
 import { useCart } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
-import RatingComponent from './RatingsComponent';
 import swal from 'sweetalert';
+import ImageGallery from './ImageGallery';
+import ProductTabs from './ProductTabs';
+import RatingComponent from './RatingsComponent'; // Assuming this component handles showing ratings
 
 function ProductDetailPage() {
   const { productId } = useParams();
@@ -38,11 +39,8 @@ function ProductDetailPage() {
       });
       return;
     }
-
-    const userId = user.id;
-    const quantity = 1;
     try {
-      await addToCart(userId, product._id, quantity);
+      await addToCart(user.id, product._id, 1);
       swal({
         title: "Success!",
         text: "Added to cart successfully!",
@@ -63,7 +61,6 @@ function ProductDetailPage() {
   if (!product) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
-
   function renderStars(rating) {
     return [...Array(5)].map((star, index) => {
       const ratingValue = index + 1;
@@ -75,21 +72,14 @@ function ProductDetailPage() {
     });
   }
 
-  const handleBuyNow = () => {
-    navigate('/payment');
-  };
-
   return (
-<div className="bg-white min-h-screen py-12">
-  <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
-    <div className="flex justify-center lg:justify-end">
-      <div className="max-w-xl">
-        <img src={`http://localhost:5000/${product.image}`} alt={product.name} />
-      </div>
-    </div>
     <div>
-      <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-      <div className="mt-3 flex items-center">
+    <div className="bg-white min-h-screen py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <ImageGallery images={product.images} />
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+          <div className="mt-3 flex items-center">
         {product.averageRating && (
           <>
             <div className="text-xl font-semibold text-gray-800">{product.averageRating.toFixed(1)}</div>
@@ -97,27 +87,25 @@ function ProductDetailPage() {
           </>
         )}
       </div>
-      <p className="mt-6 text-gray-700">{product.description}</p>
-      <p className="mt-6 text-2xl font-semibold text-gray-900">₹{product.price}</p>
-      <div className="mt-8 flex gap-4">
-      <button
-  className="bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md"
-  onClick={handleAddToCart}
->
-  Add to Cart
-</button>
-<button
-  className="bg-blue-700 hover:bg-blue-800 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md ml-4"
-  onClick={handleBuyNow}
->
-  Buy Now
-</button>
-
+          <p className="mt-6 mb-6 text-2xl font-semibold text-gray-900">₹{product.price}</p>
+          <ProductTabs
+            aboutThisItem={product.aboutThisItem}
+            additionalInformation={product.additionalInformation}
+          />
+          <div className="mt-8 flex gap-4">
+            <button className="bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md" onClick={handleAddToCart}>
+              Add to Cart
+            </button>
+            <button className="bg-blue-700 hover:bg-blue-800 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md" onClick={() => navigate('/payment')}>
+              Buy Now
+            </button>
+          </div>
+        
+         
       </div>
     </div>
   </div>
-
-  <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+  <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-5 mb-16">
     <h2 className="text-3xl font-bold text-gray-900">Reviews</h2>
     <div className="mt-6 space-y-6">
       {product && user && (
@@ -151,14 +139,10 @@ function ProductDetailPage() {
 ) : (
   <p className="text-gray-600">No reviews yet.</p>
 )}
-
-
-
-    </div>
-  </div>
+        </div>
+      
+      </div>
 </div>
-
-
   );
 }
 

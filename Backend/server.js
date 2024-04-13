@@ -13,17 +13,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+  destination: function(req, file, cb) {
       cb(null, 'uploads/');
-    },
-    filename: function (req, file, cb) {
+  },
+  filename: function(req, file, cb) {
+      // Create a unique file name to prevent any naming conflicts
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      cb(null, uniqueSuffix + path.extname(file.originalname)); // Keep original file's extension
-    }
-  });
-  
-  const upload = multer({ storage: storage });
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+
   
 connectDB();
 
@@ -47,26 +51,44 @@ app.get('/api/products/:productId', async (req, res) => {
       res.status(500).send('An error occurred');
     }
   });
-app.post('/api/products', upload.single('image'), async (req, res) => {
+  app.post('/api/products', upload.array('images', 10), async (req, res) => {
+    console.log(req.files);  // Check the files array
+    console.log(req.body);
     try {
-      const { name, description, price, inStock } = req.body;
-      const image = req.file.path; // Path where the image is saved
+        const {
+            name,
+            propertyDescription,
+            price,
+            inStock,
+            aboutThisItem,
+            additionalInformation,
+            category
+        } = req.body;
   
-      const newProduct = new Product({
-        name,
-        description,
-        price,
-        inStock: inStock === 'true', // Ensure correct boolean handling
-        image,
-      });
+        const imagePaths = req.files.map(file => file.path); // Get paths of all uploaded files
   
-      await newProduct.save();
-      res.status(201).json(newProduct);
+        const aboutItemArray = JSON.parse(aboutThisItem || '[]');
+        const additionalInfoObject = JSON.parse(additionalInformation || '{}');
+  
+        const newProduct = new Product({
+            name,
+            propertyDescription,
+            price,
+            inStock: inStock === 'true', // Ensure correct boolean handling
+            images: imagePaths, // Save array of images
+            aboutThisItem: aboutItemArray,
+            additionalInformation: additionalInfoObject,
+            category
+        });
+  
+        await newProduct.save();
+        res.status(201).json(newProduct);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error" });
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
     }
   });
+  
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

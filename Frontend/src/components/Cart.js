@@ -1,9 +1,9 @@
 import React, { useEffect, useContext } from 'react';
-import { useCart } from '../context/CartContext'; // Adjust the path as necessary
-import { AuthContext } from '../context/AuthContext'; // Adjust the path as necessary
+import { useCart } from '../context/CartContext';
+import { AuthContext } from '../context/AuthContext';
 
 function CartPage() {
-  const { cart, fetchCart } = useCart();
+  const { cart, fetchCart, removeFromCart } = useCart(); // Assuming removeFromCart is available from context
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
@@ -11,6 +11,15 @@ function CartPage() {
       fetchCart(user.id);
     }
   }, [user]);
+
+  const handleRemoveFromCart = async (productId) => {
+    try {
+      await removeFromCart(productId , user.id); // Assume removeFromCart handles the API call and state update
+      console.log(`Removed item with id: ${productId}`);
+    } catch (error) {
+      console.error('Error removing item from cart:', error);
+    }
+  };
 
   return (
     <div className="container bg-gray-100 mx-auto p-6">
@@ -20,19 +29,18 @@ function CartPage() {
           {cart.map((item) => (
             <div key={item.product._id} className="bg-white rounded-lg shadow-md overflow-hidden">
               <img
-                src={`http://localhost:5000/${item.product.image}`} // Make sure this is the correct path to your image
+                src={`http://localhost:5000/${item.product.images[0]}`}
                 alt={item.product.name}
-                className="w-full h-48 object-contain mx-auto" // Changed to object-contain with centering
+                className="w-full h-48 object-contain mx-auto"
               />
               <div className="p-6">
                 <h3 className="text-lg font-semibold mb-2">{item.product.name}</h3>
-                <p className="text-gray-700 mb-4">{item.product.description}</p>
+                <p className="text-gray-700 mb-4">{item.product.productDescription}</p>
                 <div className="flex justify-between items-center">
-                  <span className="text-xl font-bold">${item.product.price}</span>
-                  {/* Implement the removeFromCart button and functionality if needed */}
+                  <span className="text-xl font-bold">₹{item.product.price}</span>
                   <button
-                    className="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700 transition duration-300"
-                    // onClick={() => removeFromCart(item.product._id)}
+                    className="py-3 px-8 bg-red-500 hover:bg-red-700 text-white font-medium rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md"
+                    onClick={() => handleRemoveFromCart(item.product._id)}
                   >
                     Remove
                   </button>

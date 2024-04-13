@@ -10,15 +10,15 @@ const ratingSchema = new mongoose.Schema({
     required: true
   },
   rating: Number,
-  message: String, // Add this line to include a message with the rating
-}, { timestamps: true }); // Optional: add timestamps to keep track of when the rating was submitted
+  message: String,
+}, { timestamps: true });
 
 const ProductSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
-  description: {
+  propertyDescription: {
     type: String,
   },
   price: {
@@ -29,16 +29,25 @@ const ProductSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  image: { // Add image path
+  images: [{
     type: String,
-    required: false, // Set based on your requirements
-  },
-  ratings: [ratingSchema], // Use the defined ratingSchema for ratings
+  }],
+  ratings: [ratingSchema],
   averageRating: {
     type: Number,
     default: 0,
   },
-  
+  aboutThisItem: [{
+    type: String
+  }],
+  additionalInformation: {
+    type: Map,
+    of: String
+  },
+  category: {
+    type: String,
+    required: true
+  },
 });
 
 module.exports = mongoose.model('product', ProductSchema);

@@ -98,11 +98,16 @@ function calculateStars(averageRating) {
   <Link to={`/product/${product._id}`}>
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow transition-shadow duration-300 ease-in-out flex flex-col hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
       <div className="h-56 flex justify-center items-center overflow-hidden">
-        <img src={`http://localhost:5000/${product.image}`} alt={product.name} className="w-full h-full object-contain transition-transform duration-300 ease-in-out hover:scale-110" />
+        <img src={`http://localhost:5000/${product.images[0]}`} alt={product.name} className="w-full h-full object-contain transition-transform duration-300 ease-in-out hover:scale-110" />
       </div>
       <div className="p-4 flex flex-col flex-1">
         {/* Optional: Display category or tag */}
-        <span className="text-sm text-gray-500 mb-1">Category</span>
+        <span className="text-sm text-gray-500 mb-1">{
+  product.category ?
+    <div>{product.category}</div> : // What to render if product.category is truthy
+    <div>Category</div>             // What to render if product.category is falsy
+}
+</span>
         <h3 className="text-lg font-semibold mb-2 line-clamp-1">{product.name}</h3> {/* Ensures text does not overflow */}
         {/* Optional: Display ratings if available */}
         <div className="flex items-center mb-2">
@@ -147,11 +152,16 @@ function calculateStars(averageRating) {
   <Link to={`/product/${product._id}`}>
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow transition-shadow duration-300 ease-in-out flex flex-col hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
       <div className="h-56 flex justify-center items-center overflow-hidden">
-        <img src={`http://localhost:5000/${product.image}`} alt={product.name} className="w-full h-full object-contain transition-transform duration-300 ease-in-out hover:scale-110" />
+        <img src={`http://localhost:5000/${product.images[0]}`} alt={product.name} className="w-full h-full object-contain transition-transform duration-300 ease-in-out hover:scale-110" />
       </div>
       <div className="p-4 flex flex-col flex-1">
         {/* Optional: Display category or tag */}
-        <span className="text-sm text-gray-500 mb-1">Category</span>
+        <span className="text-sm text-gray-500 mb-1">{
+  product.category ?
+    <div>{product.category}</div> : // What to render if product.category is truthy
+    <div>Category</div>             // What to render if product.category is falsy
+}
+</span>
         <h3 className="text-lg font-semibold mb-2 line-clamp-1">{product.name}</h3> {/* Ensures text does not overflow */}
         {/* Optional: Display ratings if available */}
         <div className="flex items-center mb-2">

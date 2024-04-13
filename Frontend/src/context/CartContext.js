@@ -30,6 +30,27 @@ export const CartProvider = ({ children }) => {
     }
   };
   
+  const removeFromCart = async (productId, userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/cart/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId , userId}) // Including userId and productId in the body
+      });
+  
+      if (response.ok) { // More robust check for successful response (ok checks for any 2xx status)
+        setCart(currentCart => currentCart.filter(item => item.product._id !== productId));
+      } else {
+        // If the response is not ok, throw an error with the status text
+        throw new Error(`Failed to remove the item: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error removing item from cart', error);
+    }
+  };
+  
 
   const addToCart = async (userId, productId, quantity) => {
     const response = await fetch(`http://localhost:5000/api/cart/add`, {
@@ -44,7 +65,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cart, fetchCart, addToCart }}>
+    <CartContext.Provider value={{ cart, fetchCart, addToCart ,removeFromCart }}>
       {children}
     </CartContext.Provider>
   );
