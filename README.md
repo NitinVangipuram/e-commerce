@@ -64,16 +64,16 @@ The backend provides the following API endpoints for interacting with the databa
 
 To run the project locally, follow these steps:
 
-1. Clone the repository: `git clone <repository-url>`
+1. Clone the repository: `git clone https://github.com/NitinVangipuram/e-commerce.git`
 2. Navigate to the frontend directory: `cd frontend`
 3. Install frontend dependencies: `npm install`
 4. Start the frontend development server: `npm start`
 5. Navigate to the backend directory: `cd ../backend`
 6. Install backend dependencies: `npm install`
-7. Start the backend server: `npm start`
+7. Start the backend server: `node server.js`
 
 Once both the frontend and backend servers are running, you can access the website by opening a web browser and navigating to the specified URL.
 
 ---
 
-This project demonstrates how ChatGPT can be used to generate code for building functional web applications, combining natural language processing with modern web development practices. You can find the full project implementation [here](<link-to-your-repository>).
+This project demonstrates how ChatGPT can be used to generate code for building functional web applications,  with modern web development practices. You can find link to the complete gpt prompt [here](https://chat.openai.com/share/5eb69ad9-f23d-469a-8b09-eb57afcb6285).
