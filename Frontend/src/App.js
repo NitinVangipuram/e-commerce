@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext'; // Import CartProvider
 import Header from './components/Header';
@@ -10,25 +10,32 @@ import Cart from './components/Cart';
 import PaymentPage from './components/PaymentPage';
 import Products from './components/Products';
 import AdminPage from './components/AdminPage';
-// Import additional pages as needed
+import { AuthContext } from './context/AuthContext'; // Import AuthContext
 import './index.css';
 
-
 function App() {
+  const { user } = useContext(AuthContext); // Access user from AuthContext
+ console.log(user);
   return (
     <Router>
-     <CartProvider> {/* Wrap your routes with CartProvider */}
-      <Header />
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegistrationPage />} />
-        <Route path="/product/:productId" element={<ProductDetailPage />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path ="/admin" element={<AdminPage />} />
-        <Route path="/"  element={<Products/>} />
-      </Routes>
-      <Footer />
+      <CartProvider> {/* Wrap your routes with CartProvider */}
+        <div className="flex flex-col min-h-screen"> {/* Flex container for content + footer */}
+          <Header />
+          <main className="flex-grow"> {/* Main content area that grows */}
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegistrationPage />} />
+              <Route path="/product/:productId" element={<ProductDetailPage />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/payment" element={<PaymentPage />} />
+              {user && user.isAdmin && ( // Render AdminPage only if user is logged in and isAdmin is true
+                <Route path="/admin" element={<AdminPage />} />
+              )}
+              <Route path="/" element={<Products />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
       </CartProvider>
     </Router>
   );

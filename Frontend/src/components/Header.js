@@ -6,7 +6,7 @@ import { MdShoppingCart, MdExitToApp, MdPersonAdd, MdLogin, MdSearch } from 'rea
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, logout } = useContext(AuthContext);
+  const { isAuthenticated, logout ,user } = useContext(AuthContext);
 
   const handleLogout = () => {
     swal({
@@ -68,7 +68,9 @@ function Header() {
                 <Link to="/register" className="py-5 px-3 hover:text-gray-300 flex items-center"><MdPersonAdd className="mr-2"/>Register</Link>
               </>
             ) : (
-              <>
+              <> {user && user.isAdmin && ( // Render AdminPage only if user is logged in and isAdmin is true
+              <Link to="/admin" className="py-5 px-3 hover:text-gray-300 flex items-center">Admin</Link>
+              )}
                 <Link to="/cart" className="py-5 px-3 hover:text-gray-300 flex items-center"><MdShoppingCart className="mr-2"/>Cart</Link>
                 <button onClick={handleLogout} className="py-5 px-3 hover:text-gray-300 cursor-pointer flex items-center"><MdExitToApp className="mr-2"/>Logout</button>
               </>
@@ -101,7 +103,9 @@ function Header() {
             <Link to="/register" className="block py-2 px-4 text-sm hover:bg-gray-700 flex items-center"><MdPersonAdd className="mr-2"/>Register</Link>
           </>
         ) : (
-          <>
+          <>{user && user.isAdmin && ( // Render AdminPage only if user is logged in and isAdmin is true
+              <Link to="/admin" className="py-5 px-3 hover:text-gray-300 flex items-center">Admin</Link>
+              )}
             <Link to="/cart" className="block py-2 px-4 text-sm hover:bg-gray-700 flex items-center"><MdShoppingCart className="mr-2"/>Cart</Link>
             <button onClick={handleLogout} className="block py-2 px-4 text-sm hover:bg-gray-700 w-full text-left flex items-center"><MdExitToApp className="mr-2"/>Logout</button>
           </>

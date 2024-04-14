@@ -71,7 +71,9 @@ function ProductDetailPage() {
       );
     });
   }
-
+  const handleBuyNow = () => {
+    navigate('/payment', { state: { productImage: product.images[0], productPrice: product.price , productName:product.name } });
+  };
   return (
     <div>
     <div className="bg-white min-h-screen py-12">
@@ -96,7 +98,7 @@ function ProductDetailPage() {
             <button className="bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md" onClick={handleAddToCart}>
               Add to Cart
             </button>
-            <button className="bg-blue-700 hover:bg-blue-800 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md" onClick={() => navigate('/payment')}>
+            <button className="bg-blue-700 hover:bg-blue-800 text-white font-medium py-3 px-8 rounded-full transition-all duration-150 ease-in-out transform hover:scale-105 shadow-md"  onClick={handleBuyNow}>
               Buy Now
             </button>
           </div>
