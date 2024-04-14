@@ -10,6 +10,7 @@ import Cart from './components/Cart';
 import PaymentPage from './components/PaymentPage';
 import Products from './components/Products';
 import AdminPage from './components/AdminPage';
+import ManageProducts from './components/ManageProducts';
 import { AuthContext } from './context/AuthContext'; // Import AuthContext
 import './index.css';
 
@@ -30,6 +31,11 @@ function App() {
               <Route path="/payment" element={<PaymentPage />} />
               {user && user.isAdmin && ( // Render AdminPage only if user is logged in and isAdmin is true
                 <Route path="/admin" element={<AdminPage />} />
+                
+              )}
+              {user && user.isAdmin && ( // Render AdminPage only if user is logged in and isAdmin is true
+              <Route path="/manage-products" element={<ManageProducts />} />
+                
               )}
               <Route path="/" element={<Products />} />
             </Routes>

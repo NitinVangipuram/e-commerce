@@ -61,6 +61,23 @@ router.post('/:productId/rate', async (req, res) => {
     res.status(500).json({ message: 'An error occurred', error: error.message });
   }
 });
+// DELETE a product by ID
+router.delete('/:productId', async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const product = await Product.findByIdAndDelete(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error('Failed to delete the product:', error);
+    res.status(500).json({ message: 'Failed to delete the product', error: error.message });
+  }
+});
+
 
 
 
