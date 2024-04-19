@@ -3,6 +3,7 @@ import { Link, useNavigate} from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import swal from 'sweetalert';
 import { MdShoppingCart, MdExitToApp, MdPersonAdd, MdLogin, MdSearch } from 'react-icons/md';
+import { MdAdminPanelSettings, MdManageAccounts } from 'react-icons/md';
 
 function Header() {
     
@@ -94,7 +95,12 @@ function Header() {
                         ) : (
                             <>
                                 {user && user.isAdmin && (
-                                    <Link to="/admin" className="py-5 px-3 hover:text-gray-300 flex items-center">Admin</Link>
+                                    <Link to="/admin" className="py-5 px-3 hover:text-gray-300 flex items-center"><MdAdminPanelSettings className="mr-2" />Admin</Link>
+                                    
+                                )}
+                                {user && user.isAdmin && (
+                                    <Link to="/manage-products" className="py-5 px-3 hover:text-gray-300 flex items-center"> <MdManageAccounts className="mr-2" />Manage Products</Link>
+                                    
                                 )}
                                 <Link to="/cart" className="py-5 px-3 hover:text-gray-300 flex items-center"><MdShoppingCart className="mr-2"/>Cart</Link>
                                 <button onClick={handleLogout} className="py-5 px-3 hover:text-gray-300 cursor-pointer flex items-center"><MdExitToApp className="mr-2"/>Logout</button>
@@ -123,7 +129,7 @@ function Header() {
                     />
                     <button
                         type="submit"
-                        className="mt-2 w-full py-2 bg-gray-700 text-white rounded-lg"
+                        className="mt-2 w-full py-2 bg-gray-700 text-white rounded-lg mb-2"
                     >
                         <MdSearch className="inline mr-2"/>Search
                     </button>
@@ -136,10 +142,14 @@ function Header() {
                 ) : (
                     <>
                         {user && user.isAdmin && (
-                            <Link to="/admin" className="block py-2 px-4 text-sm hover:bg-gray-700">Admin</Link>
+                            <Link to="/admin" className="block py-2 px-4 text-sm hover:bg-gray-700 flex items-center"><MdAdminPanelSettings className="mr-2" />Admin</Link>
                         )}
+                        {user && user.isAdmin && (
+                                    <Link to="/manage-products" className="block py-2 px-4 text-sm hover:bg-gray-700 flex items-center" > <MdManageAccounts className="mr-2" />Manage Products</Link>
+                                    
+                                )}
                         <Link to="/cart" className="block py-2 px-4 text-sm hover:bg-gray-700 flex items-center"><MdShoppingCart className="mr-2"/>Cart</Link>
-                        <button onClick={handleLogout} className="block py-2 px-4 text-sm hover:bg-gray-700 cursor-pointer flex items-center"><MdExitToApp className="mr-2"/>Logout</button>
+                        <Link onClick={handleLogout} className="block py-2 px-4 text-sm hover:bg-gray-700 flex items-center"><MdExitToApp className="mr-2"/>Logout</Link>
                     </>
                 )}
             </div>
